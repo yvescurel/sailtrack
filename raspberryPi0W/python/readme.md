@@ -1,6 +1,7 @@
 L'application ne fonctionnera pas tant que vous n'aurez pas créé votre propre base firebase gratuite 
 voir documentation firebase pour creation d'une database "RealTime Database"
 https://www.youtube.com/watch?v=qKxisFLQRpQ
+
 ainsi que la clef privée d'accès à cette base 
 voir documentation pour la creation de clef privée permettant d'activer l'accès à la base avec la bibliothèque firebase_admin
 https://www.freecodecamp.org/news/how-to-get-started-with-firebase-using-python/
