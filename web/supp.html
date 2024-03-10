@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <title>Suppression</title>
+        
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use-->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-storage.js"></script>
+
+    <script src="key.js"></script>
+
+
+        <style>
+
+        
+            /* Loading */
+
+            #loading {
+            width: 100%;
+            height: 100vh;
+            background-color: #428BCA;
+            }
+
+            .loading_container {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            }
+
+            #spin {
+            border: 16px solid #f3f3f3;
+            /* Light grey */
+            border-top: 16px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            }
+
+            @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+
+            #loading h1 {
+            color: #FFF;
+            margin-left: 10px;
+            }
+
+        </style>
+    
+    </head>
+    <style>
+        html, body { height: 100% }
+    </style>
+
+    <body onload="initApp();">
+        <div id="loader" > </div>
+        <br /><br />
+        <span id="spanAncre"></span>
+        <br /><br />
+        <span id="spanComment"></span>
+        <br /><br />
+        <span id="spanVideo"></span>
+        <br /><br />
+        <Img id="imageUrl" height="2">
+        <br /><br />
+        <button id="validerSupp">Valider Supression</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button id="annulerSupp">Annuler Supression</button>
+
+        <script>
+
+      
+            document.querySelector("#validerSupp").addEventListener("click", () => {
+                //si image presente dans storage la supprimer prealablement
+                if (document.getElementById("imageUrl").src!="" ) {
+                    deleteContenu("img");
+                } else {
+                    deleteContenu("autre");
+                }
+
+            });
+
+            document.querySelector("#annulerSupp").addEventListener("click", () => {
+                alert("Abandon Suppression");
+                window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit';
+
+            });
+
+
+            function deleteContenu(mode) {
+                if (mode=="img") {
+
+                    var imgUrl=document.getElementById("imageUrl").src;
+                    var myR1 = firebase.storage().refFromURL(imgUrl); 
+                    var chemin=jUser+'/'+jGuid+'/'+ myR1.name;
+                    // deux possibilités par ref(chemin) ou par refFromURL(imgUrl);
+                    var myR2 = firebase.storage().ref(chemin);
+                    // Delete the file
+                    myR2.delete().then(() => {
+                        // attention toute la suite du code doit être là
+                        alert('Supression image OK');
+                        firebase.database().ref(jUser+'/'+jGuid+'/'+k).update({ ANCRE: 0, COMMENT: "", LIENVIDEO: "", IMAGEURL: ""});   
+                        window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit';
+                    }).catch((error) => {
+                        // alert(error);
+                         // on supprime quand meme car generalemenr ici erreur = url image non trouvée
+                         firebase.database().ref(jUser+'/'+jGuid+'/'+k).update({ ANCRE: 0, COMMENT: "", LIENVIDEO: "", IMAGEURL: ""});   
+                         window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit';
+                    });
+
+                } else {
+                    try {
+                        firebase.database().ref(jUser+'/'+jGuid+'/'+k).update({ ANCRE: 0, COMMENT: "", LIENVIDEO: "", IMAGEURL: ""}); 
+                        window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit';
+                    } catch(error) {
+                        alert(error);
+                    }
+
+                }
+
+            }
+      
+          </script>
+
+
+    </body>
+</html>
+
+<script type="text/javascript">
+  
+    const params = new URLSearchParams(document.location.search);
+    const user = params.get("user");
+    const journal_guid = params.get("id");
+    const item_Key = params.get("k");
+
+    jUser = user;
+    jGuid = journal_guid ;
+    k = item_Key;
+
+    var jLat;
+    var jLng;
+ 
+    
+    function initApp() {
+
+        afficheLoader();
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.database().ref(jUser+'/'+jGuid+'/'+k).on('value', wp => {
+        
+         console.log(wp.key+'     '+wp.val().COMMENT);
+         if (wp.val().ANCRE==0) {
+            document.getElementById("spanAncre").textContent = 'Ancre: Non';
+         } else  {
+            document.getElementById("spanAncre").textContent = 'Ancre: Oui';
+         }
+         if (wp.val().COMMENT!="") {
+            document.getElementById("spanComment").textContent = 'Commentaire:'+wp.val().COMMENT;
+         }
+         if (wp.val().LIENVIDEO!="") {
+             document.getElementById("spanVideo").textContent = 'Lien video YouTube:'+wp.val().LIENVIDEO;
+         }
+         if (wp.val().IMAGEURL!="") {
+             document.getElementById("imageUrl").src = wp.val().IMAGEURL;
+             document.getElementById("imageUrl").height = 218;
+         }
+
+         jLat=wp.val().LAT;
+         jLng=wp.val().LNG;
+
+         supprimeLoader();
+       
+        })
+ 
+    }
+
+    function afficheLoader() {
+    
+        var divLoader = document.getElementById('loader');
+        var spanLoad = document.createElement('span');
+        spanLoad.innerHTML  = '<span> <div class="loading_container"><div id="spin"></div><h1>Loading...</h1></div></span>';
+        divLoader.appendChild(spanLoad);
+
+    }
+
+    function  supprimeLoader() {
+        
+        var divLoader = document.getElementById('loader');
+        divLoader.style.display = "none";
+
+    }
+
+</script>

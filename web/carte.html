@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <title>Ma Carte SailTrack</title>
+        
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use-->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+        
+    
+       <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+       -->
+
+       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+       <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  
+
+       <script src="utils.js"></script>
+       <script src="key.js"></script>
+
+
+        <style>
+
+            .leaflet-control {display:none;} 
+
+            .titre
+             {
+                 background-color: #27B1FC;
+                 color: white;
+                 display: block;
+                 width: 100%;
+             }
+             .btVisu {
+                 vertical-align: 5px ;
+                 margin-right: 10px ;
+                 margin-left: 5px ;
+                 display: inline-block;
+             }
+
+            /* Loading */
+
+            #loading {
+            width: 100%;
+            height: 100vh;
+            background-color: #428BCA;
+            }
+
+            .loading_container {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            }
+
+            #spin {
+            border: 16px solid #f3f3f3;
+            /* Light grey */
+            border-top: 16px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            }
+
+            @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+
+            #loading h1 {
+            color: #FFF;
+            margin-left: 10px;
+            }
+
+        
+         </style>
+    
+    </head>
+    <style>
+        html, body { height: 100% }
+    </style>
+
+    <body onload="initApp();">
+        <div id="loader" > </div>
+        <div id="journal" > </div>
+        <div id="map" style="width:100%; height:100%"></div>
+    </body>
+</html>
+<script type="text/javascript">
+  
+    var jnl;  
+    var jUser;
+    var jGuid;
+    var markers;
+    var lat;
+    var lon;
+    var divJournal = document.getElementById('journal');
+
+    const params = new URLSearchParams(document.location.search);
+    const journal_guid = params.get("id");
+    const user = params.get("user");
+    const pLat = params.get("lat");
+    const pLon = params.get("lon");
+    var mode = params.get("mode");
+
+    jGuid = journal_guid ;
+    jUser = user;
+    lat = pLat;
+    lon = pLon;
+    mode_saisie = "";
+    if (mode!=null) {
+        mode_saisie = mode.toUpperCase();
+    }
+
+    var tab_latlon = [];
+    var items = [];
+ 
+    
+    function initApp() {
+        
+        afficheLoader();
+
+    
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAmqHThIZgjSTiNQXGtgkfvX2gjs6CXL_4",
+            authDomain: "sailing-track.firebaseapp.com",
+            databaseURL: "https://sailing-track-default-rtdb.firebaseio.com",
+            projectId: "sailing-track",
+            storageBucket: "sailing-track.appspot.com",
+            messagingSenderId: "186596029014",
+            appId: "1:186596029014:web:8ada3b5e36beda965c81f7",
+            measurementId: "G-044B7RZQ26"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.database().ref(jUser+'/'+jGuid).on('value', lstwp => {
+        
+
+        lstwp.forEach((child) => {
+
+            if (child.val().LAT==null || child.val().LNG==null || child.val().DT==null ) {
+                // rien faire
+            } else {
+
+                var _latlon= [];
+                _latlon.push(child.val().LAT);
+                _latlon.push(child.val().LNG);
+                tab_latlon.push(_latlon);
+
+                _dt = new Date(child.val().DT),
+                items.push({
+                    ancre: child.val().ANCRE,    
+                    lat: child.val().LAT,
+                    lng: child.val().LNG,
+                    dt: getDateJJMMAAAAHHmm(_dt),
+                    dt_epoch: child.val().DT,
+                    comment: child.val().COMMENT, 
+                    lienvideo: child.val().LIENVIDEO, 
+                    imageurl: child.val().IMAGEURL, 
+                    angle: 0,
+                    vitesse: 0,
+                    distance: 0,
+                    key: child.key
+                })
+            }
+        })
+        
+        window.scrollTo(0, 0);
+        
+        initMap();
+
+        supprimeLoader();
+    })
+ 
+    }
+
+    function initMap() {
+
+        var standardIcon = L.icon({
+            iconUrl: '../icons/wp30orange.png',
+            iconSize:     [10, 10], 
+         });
+
+         var startIcon = L.icon({
+            iconUrl: '../icons/start.png',
+            iconSize:     [25, 25], 
+         });
+
+         var stopIcon = L.icon({
+            iconUrl: '../icons/stopsail.png',
+            iconSize:     [35, 35], 
+         });
+
+         var commentIcon = L.icon({
+            iconUrl: '../icons/wp30comment.png',
+            iconSize:     [30, 30], 
+         });
+
+         var videoIcon = L.icon({
+            iconUrl: '../icons/wp30video.png',
+            iconSize:     [30, 30], 
+         });
+
+         var imageIcon = L.icon({
+            iconUrl: '../icons/wp30photo.png',
+            iconSize:     [30, 30], 
+         });
+
+         var ancreIcon = L.icon({
+            iconUrl: '../icons/ancre.png',
+            iconSize:     [30, 30], 
+         });
+
+		
+        var map; 
+		
+		var myMarker;
+		var myMarkerDistBig;
+		var myMarkerDistSmall;
+		
+		var dirIconBig;
+		var dirIconSmall;
+		var bigGroupMarkers = new L.FeatureGroup();
+		var smallGroupMarkers = new L.FeatureGroup();
+
+       
+        if (lat!=null && lon!=null) {     
+            map = L.map('map').setView([lat, lon], 13);      
+        } else {
+            map = L.map('map').setView(tab_latlon[tab_latlon.length-1,tab_latlon.length-1], 11); 
+        } 
+
+        console.log(tab_latlon);
+        //L.map("map", { crs: projection, minZoom: 3, maxZoom: 16 });
+        var polyline = L.polyline(tab_latlon, {color: "#FF3333"}).addTo(map);
+        
+        var totDist=0;
+        for(i=0;i<items.length; i++) {
+
+            var wp = items[i];
+            if (i<items.length-1) { 
+
+                var wp_suiv = items[i+1];
+
+                // calculs disance angle et vitesse
+
+                //console.log("******************");
+                //console.log(i); 
+                //console.log(wp.lat);
+                //console.log(wp.lng);
+                //console.log(wp_suiv.lat);
+                //console.log(wp_suiv.lng);
+
+                _dist =getDistanceKm(wp.lat,wp.lng, wp_suiv.lat,wp_suiv.lng)*1000; // en metres
+                _angle= getBearing(wp.lat,wp.lng, wp_suiv.lat,wp_suiv.lng);
+                _vitesse = getSpeedNoeuds(wp.dt_epoch,wp_suiv.dt_epoch,_dist);
+
+            }
+           
+            wp.distance = _dist;
+            wp.angle = _angle;
+            wp.vitesse = _vitesse;
+            //console.log("Distance en metres:"+wp.distance);
+            //console.log("Angle en degrés:"+wp.angle);
+            //console.log("Vitesse en noeuds:"+wp.vitesse);
+            //console.log("******************");
+
+            totDist+=_dist;
+
+            var comment='';
+            var lienvideo='';
+            var imageurl ='';
+
+            var enteteBox = '<b>'+wp.dt+'</b>&nbsp;&nbsp;['+wp.lat+' , '+wp.lng+']<br/>Cap: '+wp.angle.toFixed(2)+'&nbsp;&nbsp;Vitesse:'+wp.vitesse.toFixed(2)+'<br/><br/>';
+            var lienModifSupp = '<br/><br/><a href="modif.html?user='+jUser+'&id='+jGuid+'&k='+wp.key+'" target="_self">Modifier</a>&nbsp;&nbsp;&nbsp;&nbsp;'
+                                +'<a href="supp.html?user='+jUser+'&id='+jGuid+'&k='+wp.key+'" target="_self">Supprimer</a><br/>';
+
+                                
+            if (wp.comment!="") {
+                comment=wp.comment+'</br>';
+            }
+
+            if (wp.ancre==1){
+
+                myMarker = L.marker([wp.lat, wp.lng], {icon: ancreIcon} ).addTo(map); 
+
+                if (wp.lienvideo!="") {
+                    lienvideo='<a href="'+wp.lienvideo+'"  target="_blank">Voir vidéo</a><br/>';
+                    if (mode_saisie=="EDIT") { 
+                         myMarker.bindPopup(enteteBox+comment+lienvideo+lienModifSupp);
+
+                   } else {
+                         myMarker.bindPopup(enteteBox+comment+lienvideo);	
+                   }
+                }
+
+                if (wp.imageurl!="") {
+                    imageurl = '<a href="'+wp.imageurl+'" target="_blank"><img src='+wp.imageurl+' height="130"></a><br/>';
+                    imageIcon.iconUrl=wp.imageurl;
+                    if (mode_saisie=="EDIT") { 
+                        myMarker.bindPopup(enteteBox+comment+imageurl+lienModifSupp);
+
+                    } else {
+                        myMarker.bindPopup(enteteBox+comment+imageurl);
+                    }  					 
+                } 
+
+                if (wp.comment!=""  && wp.imageurl=="" && wp.lienvideo=="") {
+                    if (mode_saisie=="EDIT") { 
+                        myMarker.bindPopup(enteteBox+comment+lienModifSupp);
+                    } else {
+                        myMarker.bindPopup(enteteBox+comment);
+                    }
+
+                }
+                 
+            // fin si ancre
+            } else {
+
+                if (wp.lienvideo!="") {
+                    lienvideo='<a href="'+wp.lienvideo+'"  target="_blank">Voir vidéo</a><br/>';
+                    myMarker = L.marker([wp.lat, wp.lng], {icon: videoIcon} ).addTo(map);  
+                    if (mode_saisie=="EDIT") { 
+                        myMarker.bindPopup(enteteBox+comment+lienvideo+lienModifSupp);
+
+                    } else {
+                        myMarker.bindPopup(enteteBox+comment+lienvideo);	
+                    }
+                                
+                }
+                if (wp.imageurl!="") {
+                    imageurl = '<a href="'+wp.imageurl+'" target="_blank"><img src='+wp.imageurl+' height="130"></a><br/>';
+                    imageIcon.iconUrl=wp.imageurl;
+                    myMarker = L.marker([wp.lat, wp.lng], {icon: imageIcon}).addTo(map);
+                    if (mode_saisie=="EDIT") { 
+                        myMarker.bindPopup(enteteBox+comment+imageurl+lienModifSupp);
+
+                    } else {
+                        myMarker.bindPopup(enteteBox+comment+imageurl);
+                    }  					 
+                } 
+            
+                if (wp.comment!=""  && wp.imageurl=="" && wp.lienvideo=="") {
+                    myMarker= L.marker([wp.lat, wp.lng], {icon: commentIcon}).addTo(map); 
+                    if (mode_saisie=="EDIT") { 
+                        myMarker.bindPopup(enteteBox+comment+lienModifSupp);
+                    } else {
+                        myMarker.bindPopup(enteteBox+comment);
+                    }
+
+                }
+
+
+            }  // fin si pas ancre
+
+ 
+                            
+            if (i==0) {
+                myMarker = L.marker([wp.lat, wp.lng], {icon: startIcon}).addTo(map);
+                myMarker.bindPopup('<b>'+wp.dt+'</b>&nbsp;&nbsp;['+wp.lat+' , '+wp.lng+']&nbsp;&nbsp;<br/>Départ ');
+            }
+            if (i==items.length-1) {
+                myMarker = L.marker([wp.lat, wp.lng], {icon: stopIcon}).addTo(map);
+                myMarker.bindPopup('<b>'+wp.dt+'</b>&nbsp;&nbsp;['+wp.lat+' , '+wp.lng+']&nbsp;&nbsp;<br/>Dernière position ');
+            }  
+
+            if ( wp.comment==""  && wp.imageurl=="" && wp.lienvideo=="") {
+                if (i>0 && i<items.length-1) {
+                    myMarker = L.marker([wp.lat, wp.lng], {icon: standardIcon}).addTo(map);
+                    if (mode_saisie=="EDIT") { 
+                        myMarker.bindPopup(enteteBox+'<a a href="modif.html?user='+jUser+'&id='+jGuid+'&k='+wp.key+'" target="_self" >Ajout Commentaire image ou lien video</a><br/>');
+                    } else {
+                        myMarker.bindPopup(enteteBox);
+                    }
+                }      
+            }
+
+
+    }             
+
+
+         // console.log(items);
+
+
+        //********************************************
+
+    
+        var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { 
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+        });
+        map.addLayer(osmLayer);
+		
+      
+        // init affichage entete journal a la fin car on a besoin de la distance totale parcourue...
+        var distT = ((totDist/1000) * 0.539957).toFixed(0)+' Mn. &nbsp;&nbsp; ('+(totDist/1000).toFixed(0)+ ' Km.)';
+
+        var spanJnl = document.createElement('span');
+        var ddebut='Du : '+items[0].dt;
+        var dfin='&nbsp;&nbsp;  au: '+items[items.length-1].dt;
+           
+        spanJnl.innerHTML  = 
+             '<span class="titre">&nbsp;SailingTrack &nbsp;&nbsp; Distance Totale: '+distT+'<br/>'+
+       '<span class="btVisu"><button onclick=window.location.href="journal.html?user='+jUser+'&id='+
+       jGuid+'"><b>Voir le Journal </b></button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+jGuid+'&nbsp;&nbsp;&nbsp;&nbsp;'+ddebut+dfin+'</span>';
+    
+
+        divJournal.appendChild(spanJnl);
+
+        
+  
+}
+ 
+
+function afficheLoader() {
+    
+    var divLoader = document.getElementById('loader');
+    var spanLoad = document.createElement('span');
+    spanLoad.innerHTML  = '<span> <div class="loading_container"><div id="spin"></div><h1>Loading...</h1></div></span>';
+    divLoader.appendChild(spanLoad);
+
+}
+
+function  supprimeLoader() {
+    
+    var divLoader = document.getElementById('loader');
+    divLoader.style.display = "none";
+
+}
+     
+	
+</script>

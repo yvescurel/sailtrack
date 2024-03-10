@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <title>Edition</title>
+        
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use-->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-storage.js"></script>
+
+    <script src="key.js"></script>
+
+        <style>
+
+        
+            /* Loading */
+
+            #loading {
+            width: 100%;
+            height: 100vh;
+            background-color: #428BCA;
+            }
+
+            .loading_container {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            }
+
+            #spin {
+            border: 16px solid #f3f3f3;
+            /* Light grey */
+            border-top: 16px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            }
+
+            @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+
+            #loading h1 {
+            color: #FFF;
+            margin-left: 10px;
+            }
+
+        </style>
+    
+    </head>
+    <style>
+        html, body { height: 100% }
+    </style>
+
+    <body onload="initApp();">
+        <div id="loader" > </div>
+        <br /><br />
+        Ancre&nbsp;&nbsp; 
+        <input type="number" id="form-ancre" min=0 max=1 />&nbsp;( 0 : pas d'ancre, 1 : ancre)<br /><br />
+        Commentaire&nbsp;&nbsp;
+        <input type="text" id="form-comment" size=50/><br /><br />
+        Lien video YouTube&nbsp;&nbsp;
+        <input type="text" id="form-video" size=42/><br /><br />
+        Ou  Ajout / Modification image:_____________________________________________________
+        <br /><br />
+        &nbsp;<input type="file" id="photo"   onchange="readURL(this);" />
+        &nbsp;&nbsp;(ici image toujours réduite en 800px pour internet) 
+        <br />
+        <canvas id="myCanvas"></canvas><br />
+        <br /><br />
+        <button id="suppImage"> Supprimer Image </button>
+        <br />
+        ____________________________________________________________________________
+        <br /><br />     
+        <button id="valider"> Valider et retour à la carte </button><br />
+        Validation avec une image = attente plus longue.<br />
+        Toujours attendre le message de confirmation d'upload de l'image.
+        <br /><br />
+        <button id="annuler"> Annuler et retour à la carte </button>
+        <br /><br />
+
+    </body>
+</html>
+
+<script type="text/javascript">
+  
+    const params = new URLSearchParams(document.location.search);
+    const user = params.get("user");
+    const journal_guid = params.get("id");
+    const item_Key = params.get("k");
+
+    jUser = user;
+    jGuid = journal_guid ;
+    k = item_Key;
+
+    var jLat;
+    var jLng;
+
+    var url_img="";  // url image courante
+    var clic_file=false; // si clic sur bt file appel de readURL(file) 
+                         // dans ce cas le canvas ne correspond plus à url_img
+                         // prealablement chargé sur le onLoad
+ 
+    function initApp() {
+
+        afficheLoader();
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.database().ref(jUser+'/'+jGuid+'/'+k).on('value', wp => {
+        
+         console.log(wp.key+'     '+wp.val().COMMENT);
+         document.getElementById("form-ancre").value=wp.val().ANCRE;
+         document.getElementById("form-comment").value=wp.val().COMMENT;
+         document.getElementById("form-video").value=wp.val().LIENVIDEO;
+         if (wp.val().IMAGEURL!="") {
+
+             url_img=wp.val().IMAGEURL;
+             let ctx = document.querySelector("#myCanvas").getContext("2d");
+             drawImage(url_img, ctx);
+         }
+         jLat=wp.val().LAT;
+         jLng=wp.val().LNG;
+
+         supprimeLoader();
+       
+        })
+ 
+    }
+
+    
+    async function drawImage(url, ctx) {
+       let img = new Image();
+       await new Promise(r => img.onload=r, img.src=url);
+       document.querySelector("#myCanvas").width=img.width;  
+       document.querySelector("#myCanvas").height=img.height;
+       ctx.drawImage(img, 0, 0,img.width,img.height);
+    }
+
+    function afficheLoader() {
+    
+        var divLoader = document.getElementById('loader');
+        var spanLoad = document.createElement('span');
+        spanLoad.innerHTML  = '<span> <div class="loading_container"><div id="spin"></div><h1>Loading...</h1></div></span>';
+        divLoader.appendChild(spanLoad);
+
+    }
+
+    function  supprimeLoader() {
+        
+        var divLoader = document.getElementById('loader');
+        divLoader.style.display = "none";
+
+    }
+
+
+document.querySelector("#suppImage").addEventListener("click", () => {
+    deleteImage("DELETE");
+});
+
+
+
+document.querySelector("#valider").addEventListener("click", () => {
+    const ancre = document.querySelector("#form-ancre").value;
+    const comment = document.querySelector("#form-comment").value;
+    const lienvideo = document.querySelector("#form-video").value;
+    
+    if (lienvideo!="" && url_img!="") {
+        alert('Vous pouvez enregistrer soit une image soit un lien video mais pas les deux: Supprimez lien video YouTube ou image');
+
+    } else {
+
+        if (clic_file) {
+            // alors nouvelle image file chargée dans le canvas avec clic sur file
+            // et appel readURL(input file)
+            if (url_img=="") {
+                // pas d'images avant donc on uploade contenu canvas courant
+                 uploadImage();  // toujours upload du canvas courant
+            } else {
+                // cas modif image existante il faut dabord la supprimer dans firebase storage
+                //dans ce cas l'ancienne image a supprimer correspond à url_img 
+                //chargée sur le onload 
+                deleteImage("MODIF");  // toujours delete de url_img renseignée au onLoad
+                uploadImage(); // toujours upload du canvas courant 
+            }
+
+        } else {
+            // pas d'image nouvellement chargée par clic sur file
+            // on charge donc img_url qui est renseignée dans le onload 
+            // ou =="" si pas d'image
+            try {         
+                  updateCommentVideoImage(ancre,comment,lienvideo, url_img);  
+                  window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit';
+                }
+            catch(err) {
+                alert('erreur'+err); 
+            }
+        }
+
+    }  
+
+});
+
+document.querySelector("#annuler").addEventListener("click", () => {
+    window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit'; 
+
+});
+
+const updateCommentVideoImage = (a,c,v,i) => {
+
+firebase
+  .database()
+  .ref(jUser+'/'+jGuid+'/'+k)
+  .update({
+    ANCRE: a,
+    COMMENT: c,
+    LIENVIDEO: v,
+    IMAGEURL: i
+  });
+};
+
+function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+        
+            reader.addEventListener(
+                "load",
+                function() {
+                    var imgToCompress = new Image();
+                    var src = reader.result;
+                    imgToCompress.src = src;
+                 
+                    imgToCompress.onload = function() {
+                        var c = document.getElementById("myCanvas");
+                        var context = c.getContext("2d");
+
+                        const originalWidth = imgToCompress.width;
+                        const originalHeight = imgToCompress.height;
+                        var canvasWidth;
+                        var canvasHeight;
+                        maxsize=800;
+                        if (originalWidth <=maxsize && originalHeight<=maxsize) {
+                            canvasWidth=originalWidth;
+                            canvasHeight=originalHeight;  
+                        } else {
+                            
+                            // paysage
+                            if (originalWidth > originalHeight) {
+                            if (originalWidth > maxsize) {
+                                canvasHeight = Math.round((originalHeight * maxsize) /originalWidth);
+                                canvasWidth = maxsize;
+                            }
+                            // portrait  
+                            } else {
+                            if (originalHeight > maxsize) {
+                                canvasWidth = Math.round((originalWidth * maxsize) / originalHeight );
+                                canvasHeight = maxsize;
+                            }
+                            }
+                                
+                        }
+                        context.canvas.width =  canvasWidth;
+                        context.canvas.height = canvasHeight;
+                        context.drawImage(imgToCompress, 0, 0,canvasWidth,canvasHeight);
+                        // important maintenant on sait qu'on a chargé nouvelle image file
+                        clic_file=true;
+                        
+                    };
+                },
+                false
+            );
+            reader.readAsDataURL(input.files[0]);
+        }
+}
+
+
+// upload du canvas courant
+function uploadImage() {
+   const name = +new Date() + ".jpg";
+   const ref = firebase.storage().ref(jUser+'/'+jGuid);
+   let filesRef = ref.child(name)
+   var dataURL = document.getElementById("myCanvas").toDataURL('image/jpeg', 0.80)
+   const task = filesRef.putString(dataURL, 'data_url');
+   task.then(snapshot => snapshot.ref.getDownloadURL()).then(url => { 
+        // mise a jour dans firebase database url image uploadée dans firebase storage   
+        updateCommentVideoImage(document.querySelector("#form-ancre").value,document.querySelector("#form-comment").value,document.querySelector("#form-video").value,url);
+        alert("Image Uploadée");   
+        window.location.href = 'carte.html?user='+jUser+'&id='+jGuid+'&lat='+jLat+'&lon='+jLng+'&mode=edit';
+   }).catch((error) => {
+     window.alert(error)
+   })
+   
+}
+
+
+
+function deleteImage(mode) {
+    var myR2;
+    url_valide=false;
+    try {
+        // deux possibilités par ref(chemin) ou par refFromURL(imgUrl);
+        var myR1 = firebase.storage().refFromURL(url_img); 
+        var chemin=jUser+'/'+jGuid+'/'+ myR1.name;
+        var myR2 = firebase.storage().ref(chemin);
+        url_valide=true;
+    } catch(error) {
+        //alert(error);
+        // erreur là si image non trouvée donc on force mise mise a jour firebase database avec url image vide
+        updateCommentVideoImage(document.querySelector("#form-ancre").value,document.querySelector("#form-comment").value,document.querySelector("#form-video").value,"");
+        window.location.href = 'modif.html?user='+jUser+'&id='+jGuid+'&k='+k; 
+    }
+    
+    if (url_valide) {
+        myR2.delete().then(() => {
+            // attention toute la suite du code doit être là
+            if (mode=="DELETE") {
+                url_img="";
+                updateCommentVideoImage(document.querySelector("#form-ancre").value,document.querySelector("#form-comment").value,document.querySelector("#form-video").value,"");
+                alert("Image Supprimée");
+                window.location.href = 'modif.html?user='+jUser+'&id='+jGuid+'&k='+k; 
+            } else {
+                //mode modif
+               // alert("precedente image supprimée\nremplacée par la nouvelle");
+            }
+        }).catch(function(error) {
+            alert(error);
+        }); 
+
+    }
+}
+
+
+</script>
