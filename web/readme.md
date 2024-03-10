@@ -16,6 +16,8 @@ C'est a vous de creer vos propres clefs liées à votre application web ainsi qu
 
 a noter qu'ici via cette application web on stocke aussi des images accompagnant le trajet et donc on utilise Firebase Storage. (Au moment de l'upload vers Firebase Storage, ces images sont reduites systematiquement à une dimension de 800px afin de ne pas trop surcharger Firebase Storage).
 
+Tuto Firebase Storage:  https://www.youtube.com/watch?v=-IFRVMEhZDc
+
 
 
 
