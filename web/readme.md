@@ -13,8 +13,11 @@ var firebaseConfig = {
 Cette variable firebaseConfig est ensuite appelée à l'initialisation de chaque page: carte.html, journal.html, modif.html, supp.html
 
 C'est a vous de creer vos propres clefs liées à votre application web ainsi que votre database Firebase (utilisée aussi par le programme d'alimentation en Python)
+Le but est que vous ayez votre propre base firebase et application web que vous pourez gérer SOUS VOTRE PROPRE RESPONSABILITE pour votre propre application de tracking.
 
-a noter qu'ici via cette application web on stocke aussi des images accompagnant le trajet et donc on utilise Firebase Storage. (Au moment de l'upload vers Firebase Storage, ces images sont reduites systematiquement à une dimension de 800px afin de ne pas trop surcharger Firebase Storage).
+Tuto Firebase web application : https://www.youtube.com/watch?v=pP7quzFmWBY
+
+A noter qu'ici via cette application web on stocke aussi des images accompagnant le trajet et donc on utilise Firebase Storage. (Au moment de l'upload vers Firebase Storage, ces images sont reduites systematiquement à une dimension de 800px afin de ne pas trop surcharger Firebase Storage).
 
 Tuto Firebase Storage:  https://www.youtube.com/watch?v=-IFRVMEhZDc
 
