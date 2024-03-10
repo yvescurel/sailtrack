@@ -15,7 +15,7 @@ RaspBerry PI 0 + GPS 5v (type BN220 utilisant des trames NMEA0183) relié au Ras
 
 Pourquoi un raspberry pi 0? Ses avantages : tout petit, prix dérisoire, nombreux ports de communication pouvant dialoguer avec les instruments de bord et ouvert sur connexion internet.
 
-Langage utilisé python permettant de communiquer avec le GPS et une base Firebase "RealTime Database" sur internet où sont stockées nos positions GPS qui alimentent une application Web classique (Html + Javascript)
+Côté Raspberry PI OW langage utilisé python permettant de communiquer avec le GPS et une base Google Firebase "RealTime Database" sur internet où sont stockées nos positions GPS qui alimentent une application Web classique (Html + Javascript)
 
 Voir les fonctionnalités :
 https://sailing-track.web.app/
