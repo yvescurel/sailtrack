@@ -5,7 +5,7 @@ Avec l'avènement de Starlink et donc l'utilisation d'internet haut débit au la
 
 Ce tracker GPS permet de partager nos trajets de voyage en temps réel sur internet avec des personnes qui nous suivent. Idéal pour un long voyage en toute sécurité et par exemple pour le suivi sur internet par nos amis lors d'une transatlantique.
 
-Exemple de suivi avec cette application de tracking SailTrack équipant en version beta quelques voilier partis pour une transatlantique:
+Exemple de suivi avec cette application de tracking SailTrack équipant un voilier ayant fait une transatlantique:
 
 https://sailing-track.web.app/carte.html?user=leden&id=caraibe24
 
