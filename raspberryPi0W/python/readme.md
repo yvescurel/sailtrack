@@ -11,8 +11,11 @@ https://medium.com/theleanprogrammer/connecting-firebase-6102ef4eca08
 
 
 dans le code sailtrack.py les valeurs xxxxx des 2 lignes suivantes doivent donc être changées par vos propres valeurs.
+
 cred = credentials.Certificate('xxxx')
-firebase_admin.initialize_app(cred, {'databaseURL':"xxxx"}) 
+
+firebase_admin.initialize_app(cred, {'databaseURL':"xxxx"})
+
 Le but est que vous ayez votre propre base firebase que vous pourez gérer pour votre propre application de tracking
 
 
