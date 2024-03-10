@@ -21,6 +21,10 @@ A noter qu'ici via cette application web on stocke aussi des images accompagnant
 
 Tuto Firebase Storage:  https://www.youtube.com/watch?v=-IFRVMEhZDc
 
+Une image de la carte SD utilisable sur un Raspberry PI0W qui permet d'utiliser directement l'application SailTrack sur une base de données Firebase "RealTime Database" et application web Firebase existante sans aucune installation est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
+
+
+
 
 
 
