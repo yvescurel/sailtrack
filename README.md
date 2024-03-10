@@ -18,7 +18,6 @@ Pourquoi un raspberry pi 0? Ses avantages : tout petit, prix dérisoire, nombreu
 Langage utilisé python permettant de communiquer avec le GPS et une base Firebase "RealTime Database" sur internet où sont stockées nos positions GPS qui alimentent une application Web classique (Html + Javascript)
 
 Voir les fonctionnalités :
-
 https://sailing-track.web.app/
 
 
