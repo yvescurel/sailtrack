@@ -17,6 +17,6 @@ cred = credentials.Certificate('xxxx')
 
 firebase_admin.initialize_app(cred, {'databaseURL':"xxxx"})
 
-Le but est que vous ayez votre propre base firebase que vous pourez gérer pour votre propre application de tracking
+Le but est que vous ayez votre propre base firebase que vous pourez gérer SOUS VOTRE PROPRE RESPONSABILITE pour votre propre application de tracking
 
 
