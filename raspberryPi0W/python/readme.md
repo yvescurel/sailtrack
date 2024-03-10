@@ -4,7 +4,9 @@ https://www.youtube.com/watch?v=qKxisFLQRpQ
 ainsi que la clef privée d'accès à cette base 
 voir documentation pour la creation de clef privée permettant d'activer l'accès à la base avec la bibliothèque firebase_admin
 https://www.freecodecamp.org/news/how-to-get-started-with-firebase-using-python/
+
 https://firebase.google.com/docs/database/admin/start?hl=fr
+
 https://medium.com/theleanprogrammer/connecting-firebase-6102ef4eca08
 
 
