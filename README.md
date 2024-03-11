@@ -20,6 +20,9 @@ Côté Raspberry PI OW langage utilisé python permettant de communiquer avec le
 Voir les fonctionnalités :
 https://sailing-track.web.app/
 
+Une image de la carte SD utilisable sur un Raspberry PI0W permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" et l'application web Firebase existante sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
+
+
 
 
 
