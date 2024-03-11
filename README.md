@@ -22,7 +22,9 @@ https://sailing-track.web.app/
 
 Pré requis pour faire fonctionner cette application de tracking: 
 Achat d'un raspberryPI O W (30€ sur Amazon) et d'un GPS BN 220 (25€ sur Amazon)
+
 Si on est informaticien ou motivé pour apprendre Firebase : installer et configurer sa propre database et web application Firebase puis utiliser les sources fournies ici.
+
 Si on veut simplement utiliser l'application de tracking sur une RaspBerry PI OW:  utiliser une image du système et de l'application de tracking fournie par le concepteur de cette application copiable sur carte SD de 32 Go du RaspBerry PI O W.
 
 Une image de la carte SD utilisable sur un Raspberry PI0W permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" et l'application web Firebase existante sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
