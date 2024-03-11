@@ -1,4 +1,4 @@
-# sailtrack
+# SailTrack
 projet de tracking au large en voilier
 
 Avec l'avènement de Starlink et donc l'utilisation d'internet haut débit au large (où que l'on soit en mer dans le monde), en voilier on peut dès maintenant utiliser un tracker GPS couplé au réseau internet de notre voilier. 
