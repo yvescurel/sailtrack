@@ -19,8 +19,4 @@ firebase_admin.initialize_app(cred, {'databaseURL':"xxxx"})
 
 Le but est que vous ayez votre propre base firebase que vous pourez gérer SOUS VOTRE PROPRE RESPONSABILITE pour votre propre application de tracking
 
-Une image de la carte SD utilisable sur un Raspberry PI0W qui permet d'utiliser directement l'application SailTrack sur une base de données Firebase "RealTime Database" existante sans aucune installation est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
-
-
-
-
+Une image de la carte SD utilisable sur un Raspberry PI0W permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" Firebase sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
