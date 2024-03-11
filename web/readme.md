@@ -11,6 +11,7 @@ var firebaseConfig = {
 };
 
 Cette variable firebaseConfig est ensuite appelée à l'initialisation de chaque page: carte.html, journal.html, modif.html, supp.html
+vous devez donc creer un fichier key.js avec la structure definie ci dessus et les xxxx rempacées par vos propres variables.
 
 C'est a vous de creer vos propres clefs liées à votre application web ainsi que votre database Firebase (utilisée aussi par le programme d'alimentation en Python)
 Le but est que vous ayez votre propre base firebase et application web que vous pourez gérer SOUS VOTRE PROPRE RESPONSABILITE pour votre propre application de tracking.
