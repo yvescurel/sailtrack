@@ -21,6 +21,7 @@ Voir les fonctionnalités :
 https://sailing-track.web.app/
 
 Pré requis pour faire fonctionner cette application de tracking: 
+
 Si vous ne disposez d'aucun materiel: Achat d'un raspberryPI O W (30€ sur Amazon) un GPS BN 220 (25€ sur Amazon) et un petit écran tactile de contrôle hdmi 5 pouce à partir de 30€ sur Amazon
 
 Si vous disposez déjà d'un raspberry pi 0W 3 ou 4 avec écran: achat GPS BN 220 (25€ sur Amazon)
