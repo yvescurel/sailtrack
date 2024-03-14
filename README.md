@@ -27,12 +27,12 @@ Si vous ne disposez d'aucun materiel: Achat d'un raspberryPI O W (30€ sur Amaz
 Si vous disposez déjà d'un raspberry pi 0W 3 ou 4 avec écran: achat GPS BN 220 (25€ sur Amazon)
 
 
-Si on est informaticien ou motivé pour apprendre Firebase et utiliser l'application SailTrack sur son RaspBerry PI O W tout en etant totalement autonome  (c'est a dire administrateur de son application et de la partie Firebase Web):
+Si on est informaticien ou motivé pour apprendre Firebase et utiliser l'application SailTrack sur son RaspBerry PI  tout en etant totalement autonome  (c'est a dire administrateur de son application et de la partie Firebase Web):
 installer et configurer sa propre database et web application Firebase puis utiliser les sources fournies ici.
 
-Si on veut simplement utiliser l'application de tracking sur son RaspBerry PI OW:  utiliser une image du système et de l'application de tracking fournie par le concepteur de cette application copiable sur carte SD de 32 Go du RaspBerry PI O W.
+Si on veut simplement utiliser l'application de tracking sur son RaspBerry PI:  utiliser une image du système et de l'application de tracking fournie par le concepteur de cette application copiable sur carte SD de 32 Go du RaspBerry PI.
 
-Une image de la carte SD utilisable sur un Raspberry PI0W permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" et l'application web Firebase existante sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
+Une image de la carte SD utilisable sur un Raspberry PI permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" et l'application web Firebase existante sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
 
 
 
