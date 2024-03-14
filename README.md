@@ -28,7 +28,7 @@ Si vous disposez déjà d'un raspberry pi 0W 3 ou 4 avec écran: achat GPS BN 22
 
 
 Si on est informaticien ou motivé pour apprendre Firebase et utiliser l'application SailTrack sur son RaspBerry PI  tout en etant totalement autonome  (c'est a dire administrateur de son application et de la partie Firebase Web):
-installer et configurer sa propre database et web application Firebase puis utiliser les sources fournies ici.
+installer et configurer sa propre database et web application Firebase puis utiliser les sources fournies ici côté web (html / Javascript)  et côté Raspberry (Python).
 
 Si on veut simplement utiliser l'application de tracking sur son RaspBerry PI:  utiliser une image du système et de l'application de tracking fournie par le concepteur de cette application copiable sur carte SD de 32 Go du RaspBerry PI.
 
