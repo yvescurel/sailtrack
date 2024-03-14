@@ -19,6 +19,9 @@ cred = credentials.Certificate('xxxx')
 
 firebase_admin.initialize_app(cred, {'databaseURL':"xxxx"})
 
+Vous devez aussi installer les bibliothéques suivantes:
+serial, pynmea2, datetime, calendar, time, sys, os, datetime, firebase_admin
+
 Le but est que vous ayez votre propre base firebase que vous pourez gérer SOUS VOTRE PROPRE RESPONSABILITE pour votre propre application de tracking
 
 # Si vous n'utilisez pas ces sources Github
