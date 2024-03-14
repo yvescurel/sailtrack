@@ -1,4 +1,4 @@
-#Si vous utilisez ces sources Github
+# Si vous utilisez ces sources Github
 
 L'application ne fonctionnera pas tant que vous n'aurez pas créé votre propre base firebase gratuite 
 voir documentation firebase pour creation d'une database "RealTime Database"
@@ -21,6 +21,6 @@ firebase_admin.initialize_app(cred, {'databaseURL':"xxxx"})
 
 Le but est que vous ayez votre propre base firebase que vous pourez gérer SOUS VOTRE PROPRE RESPONSABILITE pour votre propre application de tracking
 
-#Si vous n'utilisez pas ces sources Github
+# Si vous n'utilisez pas ces sources Github
 
-Une image de la carte SD utilisable sur un Raspberry PI0W permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" Firebase sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
+Une image de la carte SD utilisable sur un Raspberry PI permet d'utiliser directement l'application SailTrack sur une base de données "RealTime Database" Firebase sans aucune installation et configuration de Firebase. Cette image de l'application sailTrack sur RaspBerry est disponible en contactant le concepteur et developpeur de cette application : yves.curel@gmail.com
