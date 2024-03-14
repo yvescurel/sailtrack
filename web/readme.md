@@ -24,6 +24,8 @@ A noter qu'ici via cette application web on stocke aussi des images accompagnant
 
 Tuto Firebase Storage:  https://www.youtube.com/watch?v=-IFRVMEhZDc
 
+Dans ce cas vous devez egalement utiliser le fichier sailtrack.py côté Rasberry avec le fichier key json  que vous aurez generé pour accéder à votre propre Firebase RealTime Database.
+
 
 
 
